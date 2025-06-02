@@ -43,10 +43,9 @@ This project sets up a webserver stack using **NodeJs** for serverside, **Python
 ```bash
 cd base-test
 
----
-
 # Start services
 docker-compose up -d
+```
 
 ---
 
