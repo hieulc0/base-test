@@ -43,8 +43,12 @@ This project sets up a webserver stack using **NodeJs** for serverside, **Python
 ```bash
 cd base-test
 
+---
+
 # Start services
 docker-compose up -d
+
+---
 
 ## 🚀 Usage
 
@@ -61,10 +65,15 @@ docker-compose up -d
 - Username: admin
 - Password: admin
 
+---
 
 ## ⚙️  Configuration
 
+---
+
 ## 📈 Monitoring (Optional)
+
+---
 
 ## 🪪 License
 
