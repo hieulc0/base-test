@@ -1,0 +1,99 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 2em;
+  background: #f6f6f6;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  gap: 2em;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.input-col,
+.output-col {
+  flex: 1 1 0;
+  min-width: 220px;
+}
+
+.input-col label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+#prompt-input {
+  width: 100%;
+  padding: 0.5em;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  font-size: 1em;
+  box-sizing: border-box;
+  margin-bottom: 0.5em;
+}
+
+.send-btn-row {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+#send-btn {
+  width: 120px;
+  padding: 0.5em 0;
+  background: #337ab7;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.13s;
+  box-sizing: border-box;
+}
+
+#send-btn:hover {
+  background: #265a8a;
+}
+
+.output-frame {
+  border: 2px solid #337ab7;
+  background: #fff;
+  min-height: 50px;
+  padding: 1em;
+  font-size: 1.1em;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(51,122,183,0.10);
+  word-break: break-word;
+  min-width: 120px;
+  max-height: 40vh;
+  overflow-y: auto;
+}
+
+/* Container div to hold the child divs */
+.container {
+  display: flex; /* Use flexbox to align children inline */
+  justify-content: flex-start; /* Space the children evenly */
+  align-items: center; /* Vertically center the children */
+  text-align: center; /* Center the text inside each child */
+}
+
+/* Styling for each child div */
+.child {
+  font-size: 13px;
+  padding: 2px;
+}
+
+/* Individual colors for each child div */
+.red {
+  color: red;
+}
+
+.green {
+  color: green;
+}
+
+.blue {
+  color: blue;
+}

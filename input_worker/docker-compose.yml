@@ -1,0 +1,33 @@
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    environment:
+      RABBITMQ_DEFAULT_USER: mediocre
+      RABBITMQ_DEFAULT_PASS: mediocre
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  input_worker_a:
+    build: ./
+    environment:
+      ID: A
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USER: mediocre
+      RABBITMQ_PASS: mediocre
+      RABBITMQ_QUEUE: message-retriever
+      RESPONSE_QUEUE: response-queue
+    depends_on:
+      - rabbitmq
+
+  input_worker_b:
+    build: ./
+    environment:
+      ID: B
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USER: mediocre
+      RABBITMQ_PASS: mediocre
+      RABBITMQ_QUEUE: message-retriever
+      RESPONSE_QUEUE: response-queue
+    depends_on:
+      - rabbitmq

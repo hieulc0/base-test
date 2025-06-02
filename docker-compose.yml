@@ -1,0 +1,86 @@
+
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    environment:
+      RABBITMQ_DEFAULT_USER: mediocre
+      RABBITMQ_DEFAULT_PASS: mediocre
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  
+  input-retriever:
+    build: ./input_retriever
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mariadb
+      - rabbitmq
+    environment:
+      - RABBITMQ_URL=amqp://mediocre:mediocre@rabbitmq:5672
+
+  mariadb:
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: mediocre
+      MYSQL_USER: mediocre
+      MYSQL_PASSWORD: mediocre
+      MYSQL_DATABASE: appdb
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./data/appdb:/var/lib/mysql   # ← Bind mount to local disk
+  
+  init_db:
+    build: ./init_db
+    depends_on:
+      - mariadb
+    environment:
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_USER: mediocre
+      DB_PASSWORD: mediocre
+      DB_NAME: appdb
+
+  input_worker_a:
+    build: ./input_worker
+    environment:
+      ID: A
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USER: mediocre
+      RABBITMQ_PASS: mediocre
+      RABBITMQ_QUEUE: message-retriever
+      RESPONSE_QUEUE: response-queue
+    depends_on:
+      - rabbitmq
+
+  input_worker_b:
+    build: ./input_worker
+    environment:
+      ID: B
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USER: mediocre
+      RABBITMQ_PASS: mediocre
+      RABBITMQ_QUEUE: message-retriever
+      RESPONSE_QUEUE: response-queue
+    depends_on:
+      - rabbitmq
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+
+volumes:
+  grafana-storage:

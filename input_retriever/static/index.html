@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Prompt Live Preview</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <div class="row">
+    <div class="input-col">
+      <label for="prompt-input">Input:</label>
+      <input type="text" id="prompt-input" autocomplete="off" />
+      <div class="send-btn-row">
+        <button id="spam-btn" type="button">Spam</button>
+        <button id="send-btn" type="button">Send</button>
+      </div>
+    </div>
+    <div class="output-col">
+      <div id="output-frame" class="output-frame"></div>
+    </div>
+  </div>
+
+  <script>
+    const input = document.getElementById('prompt-input');
+    const frame = document.getElementById('output-frame');
+    const sendBtn = document.getElementById('send-btn');
+    const spamBtn = document.getElementById('spam-btn');
+
+    function addMessage(msg) {
+      if (msg && msg['time-stamp'] && msg['ID']) {
+        frame.innerHTML +=
+          `
+            <div class="container">
+              <div class="child red">[${msg['time-stamp']}]</div>
+              <div class="child green">[Instance-${msg['ID']}]</div>
+              <div class="child blue">[msg: ${msg['msg']}]</div>
+            </div>
+          `;
+      }
+
+    }
+      
+
+    // Connect to the WebSocket server
+    const socket = new WebSocket('ws://localhost:8080');
+
+    // Log when the connection is open
+    socket.addEventListener('open', () => {
+      console.log('Connected to the WebSocket server!');
+    });
+
+    // Handle incoming messages from the server
+    socket.addEventListener('message', (event) => {
+      const message = JSON.parse(event.data);
+      if (message) {
+        console.log(message);
+        addMessage(message);
+      }
+      
+      frame.scrollTop = frame.scrollHeight;
+    });
+
+
+    async function showInput() {
+      const val = input.value.trim();
+      if (val.length === 0) return;
+      const payload = {
+        msg: val,
+        "time-stamp": new Date().toISOString()
+      };
+
+      socket.send(JSON.stringify(payload));
+      input.value = '';
+
+      // // Send POST with message and timestamp
+      // const payload = {
+      //   msg: val,
+      //   "time-stamp": new Date().toISOString()
+      // };
+      // try {
+      //   await fetch("/", {
+      //     method: "POST",
+      //     headers: { "Content-Type": "application/json" },
+      //     body: JSON.stringify(payload)
+      //   });
+      // } catch (err) {
+      //   // Optionally handle error
+      //   console.error("Failed to send message:", err);
+      // }
+
+      // // Create a new block for each entry
+      // const div = document.createElement('div');
+      // div.textContent = val;
+      // frame.appendChild(div);
+      // frame.scrollTop = frame.scrollHeight;
+      // input.value = '';
+    }
+
+    sendBtn.addEventListener('click', showInput);
+
+    input.addEventListener('keydown', function(event) {
+      if (event.key === 'Enter' || event.keyCode === 13) {
+        showInput();
+        event.preventDefault();
+      }
+    });
+
+    async function spamInput() {
+      // List of strings
+      const strings = [
+        "Hello, world!",
+        "Good morning!",
+        "How are you?",
+        "Stay safe!",
+        "Keep learning!",
+        "Get a random index from the list",
+        "Print the random string",
+        "You can add a condition to stop the loop after a certain time or count"
+      ];
+
+      let i = 0;
+
+      const interval = setInterval(async () => {
+        // Get a random index from the list
+        const randomIndex = Math.floor(Math.random() * strings.length);
+
+        // Print the random string
+        console.log(strings[randomIndex]);
+        const payload = {
+          msg: strings[randomIndex],
+          "time-stamp": new Date().toISOString()
+        };
+
+        socket.send(JSON.stringify(payload));
+        input.value = '';
+      
+        // You can add a condition to stop the loop after a certain time or count
+        i++;
+
+        // Example: Stop after printing 100 times
+        if (i >= 200) {
+          clearInterval(interval); // Stop the interval
+          console.log("Stopped after 100 iterations.");
+        }
+      }, 1); // Interval in milliseconds (1ms)
+    }
+
+
+    spamBtn.addEventListener('click', spamInput);
+
+
+  </script>
+</body>
+</html>
+

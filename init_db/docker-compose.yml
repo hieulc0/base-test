@@ -1,0 +1,21 @@
+services:
+  mariadb:
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: mediocre
+      MYSQL_USER: mediocre
+      MYSQL_PASSWORD: mediocre
+      MYSQL_DATABASE: appdb
+    ports:
+      - "3306:3306"
+  
+  # init_db:
+  #   build: ./
+  #   depends_on:
+  #     - mariadb
+  #   environment:
+  #     DB_HOST: mariadb
+  #     DB_PORT: 3306
+  #     DB_USER: mediocre
+  #     DB_PASSWORD: mediocre
+  #     DB_NAME: appdb
